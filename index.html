@@ -2,12 +2,14 @@
 
 <head>
     <style>
-        textarea {
-            width: 80%;
-            margin: auto;
-        }
+        body {
+            background-color: #f2f2f2;
+            zoom: 1;
+            font-size: .8rem
+                    }
         
         #inputDiv {
+            width: 80%;
             text-align: center;
             margin: auto;
             display: block;
@@ -32,12 +34,16 @@
     <div id="content">
         <h1 id="pageTitle">Travel Information</h1>
         <div id="inputDiv">
-            <textarea id="inputField" rows="15" cols="50"></textarea>
+            <textarea class="form-control form-control-sm" id="inputField" rows="15" cols="50"></textarea>
             <br>
             <button onclick="parseInput()">Parse Input</button>
         </div>
         <br><br>
         <div id="output">
+            <p>
+                <label for="outputReferenceNumber">Reference Number: </label>
+                <span id="outputReferenceNumber"></span>
+            </p>
             <table class="table table-sm table-hover" id="outputTablePassengers">
                 <thead class="thead-light">
                     <th>Titulation</th>
@@ -55,6 +61,7 @@
                     <th>From</th>
                     <th>To</th>
                     <th>Departure Date</th>
+                    <th>Boarding Time</th>
                     <th>Departure Time</th>
                     <th>Arrival Time</th>
                     <th>Class</th>
