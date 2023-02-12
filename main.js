@@ -1,4 +1,4 @@
-let defaultText = `RP/XXXXDDDDD/XXXXDDDDD            IB/SU  DDMMMYY/HHMMZ   XXXXXX
+let defaultText = `RP/XXXXDDDDD/XXXXDDDDD            IB/SU  DDMMMYY/HHMMZ   REFNBR
 1.NNNNNN/NNNNN NNNN MS
 2.NNNNNN/NNNNN NNNN(CHD/DDMMMYY)
 3.NNNNNN/NNNNN MR   4.NNNNNN/NNNNN MR
@@ -8,38 +8,6 @@ let defaultText = `RP/XXXXDDDDD/XXXXDDDDD            IB/SU  DDMMMYY/HHMMZ   XXXX
 8  KL1234 T 11MMM 6 AMSKRS HK5          1215 1400   *1A/E*
 9  KL1234 T 11MMM 6 AMSKRS HK5          1612 1945   *1A/E*`
 
-
-let example_2 = `2  SK2983 O 20FEB 1 KRSCPH HK1  0500    0600 0715   *1A/E*
-3  SK 539 O 20FEB 1 CPHMAN HK1  0730 3  0830 0930   *1A/E*
-4  SK4608 U 22FEB 3 MANOSL HK1  1145 1  1245 1545   *1A/E*
-5  SK 221 U 22FEB 3 OSLKRS HK1  1635    1705 1755   *1A/E*`
-
-let example_3 = `3  KL1206 L 01NOV 3 KRSAMS HK2          0600 0730   *1A/E*
-
-4  KL 623 Q 01NOV 3 AMSATL HK2          0935 1415   *1A/E*
-
-5  KL5034 Q 01NOV 3 ATLFLL HK2       S  1540 1742   *1A/E*
-
-6 HTL 1A HK2 FLL 01NOV-02NOV/XXX XX XX XX XX
-
-  AAAAAA FLL AAAA AA AAAAA AAA
-
-7 TUR 1A HK2 FLL 02NOV-11NOV/XX XX.XX
-
-  XX XXX
-
-8  AAAA
-
-9  AA2492 B 11NOV 6 MIACUN HK2          1735 1935   *1A/E*
-
-10 HTL 1A HK2 CUN 11NOV-18NOV/XXXX XX XX XX
-
-  XX
-
-11  KL 690 Q 18NOV 6 CUNAMS HK2          1700 0820+1 *1A/E*
-
-12  KL1209 L 19NOV 7 AMSKRS HK2          1215 1340   *1A/E*`
-
 $("#inputField").val(defaultText);
 
 
@@ -47,7 +15,7 @@ function parseFlightLine(line) {
     index_flight_no = 3
     length_flight_no = 6
     index_flight_date = 12
-    length_flight_date = 5 
+    length_flight_date = 5
     index_location = 20
     length_location = 6
     length_time = 4
@@ -121,12 +89,18 @@ function getAirportNameFromCode(code, airportdict) {
 }
 
 function combineEntrySpanningMultipleLines(lines) {
-    
+
 }
 
 
 function parseLine(line, passengertable, flighttable) {
+
+
     if (line.startsWith("RP")) {
+        let referenceNumberIndex = 56;
+        // get the four letters and put them in to the element with id  "outputReferenceNumber"
+        var referenceNumber = line.substring(referenceNumberIndex, referenceNumberIndex + 7);
+        $("#outputReferenceNumber").html(referenceNumber);
         return;
     }
 
@@ -142,12 +116,9 @@ function parseLine(line, passengertable, flighttable) {
 
     // test if line starts with a number then a space then four letters
     if (/^\d{1,2}\s\s[A-Z]{4}/.test(line)) {
-        // get the four letters and put them in to the element with id  "outputReferenceNumber"
-        var referenceNumber = line.substring(2, 7);
-        $("#outputReferenceNumber").html(referenceNumber);
         return;
     }
-    
+
     // if line is passenger information
     if (/^\d{1,2}\./.test(line)) {
         // person information
@@ -210,16 +181,13 @@ function parseLine(line, passengertable, flighttable) {
             passengertable.append($('<tr>')
                 .append($('<td>').text(titulation))
                 .append($('<td>').text(firstname))
-                .append($('<td>').text(lastname))
-                .append($('<td>').text(birthDate)));
+                .append($('<td>').text(lastname)));
 
         }
 
     }
-    
-    if (/^\d{0,2}\s/.test(line)) { // check if line is flight information
 
-        //var { lineParts, locationFrom, locationTo } = parseFlightLineOld(line)
+    if (/^\d{0,2}\s/.test(line)) { // check if line is flight information
 
         var flightInfo = parseFlightLine(line)
 
@@ -229,28 +197,14 @@ function parseLine(line, passengertable, flighttable) {
             .append($('<td>').text(flightInfo.location_from))
             .append($('<td>').text(flightInfo.location_to))
             .append($('<td>').text(flightInfo.flight_date))
-            .append($('<td>').text(flightInfo.time_boarding))
             .append($('<td>').text(flightInfo.time_departure))
-            .append($('<td>').text(flightInfo.time_arrival))
-            .append($('<td>').text(flightInfo.class)));
-
-        //             // flight information
-        // flighttable.append($('<tr>')
-        // .append($('<td>').text(lineParts[0]))
-        // .append($('<td>').text(locationFrom))
-        // .append($('<td>').text(locationTo))
-        // .append($('<td>').text(lineParts[2]))
-        // .append($('<td>').text(lineParts[6]))
-        // .append($('<td>').text(lineParts[7]))
-        // .append($('<td>').text(lineParts[8])));
-
-
-        }
+            .append($('<td>').text(flightInfo.time_arrival)));
+    }
 }
 
 function parseFlightLineOld(line) {
     var lineParts = line.split(" ")
-    lineParts = lineParts.filter(function (el) {
+    lineParts = lineParts.filter(function(el) {
         return el != "" && el != null
     })
 
